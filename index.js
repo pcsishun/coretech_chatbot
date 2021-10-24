@@ -16,15 +16,13 @@ app.use(bodyParser.json());
 const config = {
     // channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     // channelSecret: process.env.CHANNEL_SECRET,
-    channelAccessToken: 'XP9ou/4jtHzuPuy4Ww+zXTT+DELHkUeggzoAPTrcU1Zft+0ScJqNlyGjyAafq6mXJnS82G2M4Len5HcSXBsZ12AMT7QYL4/aCiS3gBsecmc4YFgytS8ZO1d2qvHc9Xu37jdofGCNSB/YsCRbQdpEGQdB04t89/1O/w1cDnyilFU=',
-    channelSecret:'be0800f53454016519d9635928b1c87e'
+    channelAccessToken: 'cO1iyreuV91L0UUTc+q2mCyQ42ZDXSSKB6W93/SBh2jvpj32CGUsMFR0UwiD9KerYVnrgFk5Bk7bQXYCTdpmh9YwAe6+GGAgfwAGg9hEETqsiue7WGTuTN0DW0GOMigPWocyZF0INoBN/D2PnX4vZAdB04t89/1O/w1cDnyilFU=',
+    channelSecret:'861ffd3753523b9a44922355ff2c7582'
   };
   
   // create LINE SDK client
   const client = new line.Client(config);
 
-
-let menu_once;
 
 app.post('/callback', async(request, response) => {
     console.log('Start....')
@@ -95,33 +93,33 @@ function getFlexMenu() {
             {
               "type": "button",
               "action": {
-                "type": "uri",
+                "type": "message",
                 "label": "Week1",
-                "uri": "https://linecorp.com"
+                "text": "Week1"
               }
             },
             {
               "type": "button",
               "action": {
-                "type": "uri",
+                "type": "message",
                 "label": "Week2",
-                "uri": "https://linecorp.com"
+                "text": "Week2"
               }
             },
             {
               "type": "button",
               "action": {
-                "type": "uri",
+                "type": "message",
                 "label": "Week3",
-                "uri": "https://linecorp.com"
+                "text": "Week3"
               }
             },
             {
               "type": "button",
               "action": {
-                "type": "uri",
+                "type": "message",
                 "label": "Week4",
-                "uri": "https://linecorp.com"
+                "text": "Week4"
               }
             }
           ]
