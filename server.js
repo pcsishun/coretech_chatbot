@@ -25,15 +25,15 @@ const config = {
 
 
 app.post('/callback', async(request, response) => {
-    console.log('Start....')
+    // console.log('Start....')
     let userID = request.body.events[0].source.userId
-    console.log(`userID--> ${userID}`);
+    // console.log(`userID--> ${userID}`);
     let msgType = request.body.events[0].message.type;
-    console.log(`msgType--> ${msgType}`);
+    // console.log(`msgType--> ${msgType}`);
     let msgText = request.body.events[0].message.text;
-    console.log(`msgText---> ${msgText}`);
+    // console.log(`msgText---> ${msgText}`);
     let token = request.body.events[0].replyToken;
-    console.log(`replay token--> ${token}`);
+    // console.log(`replay token--> ${token}`);
 
     if(msgText === 'Dashboard'){
         const msgReply = getFlexMenu();
