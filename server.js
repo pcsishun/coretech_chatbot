@@ -16,6 +16,10 @@ const pass = process.env.CLOUD_SQL_PASSWORD
 const db = process.env.CLOUD_SQL_DATABASE_NAME
 const connection = process.env.CLOUD_SQL_CONNECTION_NAME
 
+console.log(`user --> ${user}`);
+console.log(`pass --> ${pass}`);
+console.log(`db --> ${db}`);
+console.log(`connection --> ${connection}`);
 
 // create LINE SDK config from env variables
 const config = {
