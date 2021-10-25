@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `collect_userid_email`
 --
 
-CREATE TABLE `collect_userid_email` (
+CREATE TABLE `'collect_userid_email'` (
   `id` int(11) NOT NULL,
   `uid` text NOT NULL,
   `email` text NOT NULL

@@ -1,1 +1,7 @@
 runtime: nodejs16
+
+env_variables:
+  CLOUD_SQL_USERNAME: db_admin
+  CLOUD_SQL_PASSWORD: 12345678ab
+  CLOUD_SQL_DATABASE_NAME: test_deploy_scg
+  CLOUD_SQL_CONNECTION_NAME: testdeploy-330007:asia-southeast1:test-deploy
