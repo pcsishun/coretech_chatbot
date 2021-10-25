@@ -54,10 +54,12 @@ app.post('/callback', async (request, response) => {
     });
 
     conn.connect(function (err) {
-      if (err) throw console.log(err);
+      // if (err) throw console.log(err);
       const sql = `INSERT INTO collect_userid_email (email , uid) VALUES ('${msgText}', '${userID}')`;
       conn.query(sql, function (err, result) {
-        if (err) throw console.log(err);
+        if (err){
+          console.log(err.message)
+        };
         console.log('inserted')
       });
     });
