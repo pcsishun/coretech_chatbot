@@ -17,11 +17,11 @@ const db = process.env.CLOUD_SQL_DATABASE_NAME
 const socketPath = process.env.CLOUD_SQL_CONNECTION_NAME
 const connection = process.env.CLOUD_SQL_CONNECTION_HOST
 
-console.log(`user --> ${user}`);
-console.log(`pass --> ${pass}`);
-console.log(`db --> ${db}`);
-console.log(`connection --> ${connection}`);
-console.log(`socketPath --> ${socketPath}`);
+// console.log(`user --> ${user}`);
+// console.log(`pass --> ${pass}`);
+// console.log(`db --> ${db}`);
+// console.log(`connection --> ${connection}`);
+// console.log(`socketPath --> ${socketPath}`);
 
 // create LINE SDK config from env variables
 const config = {
