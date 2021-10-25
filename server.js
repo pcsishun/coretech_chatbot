@@ -14,12 +14,14 @@ app.use(bodyParser.json());
 const user = process.env.CLOUD_SQL_USERNAME
 const pass = process.env.CLOUD_SQL_PASSWORD
 const db = process.env.CLOUD_SQL_DATABASE_NAME
-const connection = process.env.CLOUD_SQL_CONNECTION_NAME
+const socketPath = process.env.CLOUD_SQL_CONNECTION_NAME
+const connection = process.env.CLOUD_SQL_CONNECTION_HOST
 
 console.log(`user --> ${user}`);
 console.log(`pass --> ${pass}`);
 console.log(`db --> ${db}`);
 console.log(`connection --> ${connection}`);
+console.log(`socketPath --> ${socketPath}`);
 
 // create LINE SDK config from env variables
 const config = {
@@ -52,6 +54,7 @@ app.post('/callback', async (request, response) => {
   } else if (msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) {
     const conn = mysql.createConnection({
       host: connection,
+      socketPath: socketPath,
       user: user,
       password: pass,
       database: db
