@@ -59,8 +59,11 @@ app.post('/callback', async (request, response) => {
       conn.query(sql, function (err, result) {
         if (err){
           console.log(err.message)
-        };
-        console.log('inserted')
+        }
+        else{
+          console.log('inserted')
+        }
+        
       });
     });
   }
