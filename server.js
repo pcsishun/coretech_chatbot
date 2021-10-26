@@ -91,7 +91,7 @@ app.post('/callback', async (request, response) => {
 
 });
 
-
+// flex menu week selection // 
 function getFlexMenu() {
   return {
     "type": "bubble",
@@ -158,7 +158,7 @@ function getFlexMenu() {
 
 
 
-
+// flex msg before open cam // 
 function openCam(){
   return {
     "type": "bubble",
