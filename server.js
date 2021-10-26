@@ -51,7 +51,15 @@ app.post('/callback', async (request, response) => {
     const echo = { type: 'flex', altText: 'This is a Flex Message', contents: msgReply };
 
     return client.replyMessage(token, echo);
-  } else if (msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) {
+  } 
+  else if (msgText === "คำถามใน Thinking Log เพื่ออัด VDO")
+  {
+    const replyFlexOpenCam = openCam()
+    const echo = {type: 'flex', altText: 'This is a Flex Message', contents: replyFlexOpenCam}
+    return client.replyMessage(token, echo);
+  }
+  else if (msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) 
+  {
     const conn = mysql.createConnection({
       host: connection,
       socketPath: socketPath,
@@ -147,6 +155,68 @@ function getFlexMenu() {
     }
   }
 }
+
+
+
+
+function openCam(){
+  return {
+    "type": "bubble",
+    "direction": "ltr",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "ช่วงนี้การนอนของคุณเป็นอย่างไร",
+          "align": "center",
+          "gravity": "center",
+          "contents": []
+        },
+        {
+          "type": "text",
+          "text": "เช่น นอนไม่ค่อยดีเลยงานเยอะมาก",
+          "align": "center",
+          "gravity": "center",
+          "contents": []
+        },
+        {
+          "type": "text",
+          "text": "___________________________",
+          "align": "center",
+          "contents": []
+        },
+        {
+          "type": "text",
+          "text": "หากพร้อมเชิญอัด video ได้เลยค่ะ",
+          "align": "center",
+          "contents": []
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [
+        {
+          "type": "button",
+          "action": {
+            "type": "uri",
+            "label": "Open Video",
+            "uri": "https://line.me/R/nv/camera/" // API Line open cam https://line.me/R/nv/camera/
+          },
+          "color": "#C6CFEAFF"
+        }
+      ]
+    }
+  }
+}
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`serve run at port ${port}`)
