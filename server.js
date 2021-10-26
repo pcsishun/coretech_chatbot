@@ -66,9 +66,13 @@ app.post('/callback', async (request, response) => {
       conn.query(sql, function (err, result) {
         if (err){
           console.log(err.message)
+          const replyMsg = {type: 'text', contents: err.message}
+          return client.replyMessage(token, replyMsg);
         }
         else{
           console.log('inserted')
+          const replyMsg = {type: 'text', contents: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
+          return client.replyMessage(token, replyMsg)
         }
         
       });
