@@ -3,9 +3,11 @@ import line from '@line/bot-sdk';
 import express from 'express';
 import mysql from 'mysql';
 // import axios from 'axios';
+import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import multer from 'multer';
+import download  from 'download';
+// import multer from 'multer';
 
 const app = express();
 const port = process.env.PORT || 5500;
@@ -31,12 +33,12 @@ const config = {
   // channelSecret: process.env.CHANNEL_SECRET,
 
   // CoreTech 
-  // channelAccessToken: 'cO1iyreuV91L0UUTc+q2mCyQ42ZDXSSKB6W93/SBh2jvpj32CGUsMFR0UwiD9KerYVnrgFk5Bk7bQXYCTdpmh9YwAe6+GGAgfwAGg9hEETqsiue7WGTuTN0DW0GOMigPWocyZF0INoBN/D2PnX4vZAdB04t89/1O/w1cDnyilFU=',
-  // channelSecret: '861ffd3753523b9a44922355ff2c7582'
+  channelAccessToken: 'cO1iyreuV91L0UUTc+q2mCyQ42ZDXSSKB6W93/SBh2jvpj32CGUsMFR0UwiD9KerYVnrgFk5Bk7bQXYCTdpmh9YwAe6+GGAgfwAGg9hEETqsiue7WGTuTN0DW0GOMigPWocyZF0INoBN/D2PnX4vZAdB04t89/1O/w1cDnyilFU=',
+  channelSecret: '861ffd3753523b9a44922355ff2c7582'
 
-  // Debuger Earth bot
-  channelAccessToken: 'XP9ou/4jtHzuPuy4Ww+zXTT+DELHkUeggzoAPTrcU1Zft+0ScJqNlyGjyAafq6mXJnS82G2M4Len5HcSXBsZ12AMT7QYL4/aCiS3gBsecmc4YFgytS8ZO1d2qvHc9Xu37jdofGCNSB/YsCRbQdpEGQdB04t89/1O/w1cDnyilFU=',
-  channelSecret: 'be0800f53454016519d9635928b1c87e'
+  // // Debuger Earth bot
+  // channelAccessToken: 'XP9ou/4jtHzuPuy4Ww+zXTT+DELHkUeggzoAPTrcU1Zft+0ScJqNlyGjyAafq6mXJnS82G2M4Len5HcSXBsZ12AMT7QYL4/aCiS3gBsecmc4YFgytS8ZO1d2qvHc9Xu37jdofGCNSB/YsCRbQdpEGQdB04t89/1O/w1cDnyilFU=',
+  // channelSecret: 'be0800f53454016519d9635928b1c87e'
 };
 
 // create LINE SDK client
@@ -93,12 +95,12 @@ app.post('/callback', async (request, response) => {
         conn.query(sql, function (err, result) {
           if (err){
             console.log(err.message)
-            const replyMsg = {type: 'text', contents: err.message}
+            const replyMsg = {type: 'text', text: err.message}
             return client.replyMessage(token, replyMsg);
           }
           else{
             console.log('inserted')
-            const replyMsg = {type: 'text', contents: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
+            const replyMsg = {type: 'text', text: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
             return client.replyMessage(token, replyMsg)
           }
           
@@ -112,8 +114,20 @@ app.post('/callback', async (request, response) => {
   if(msgType === "video"){
 
     console.log("video path");
-    const videoFile = getVideo(msgID, config.channelAccessToken);
-    console.log('videoFile--> '+ videoFile);
+    const trackBackMsg = getVideo(msgID, config.channelAccessToken, userID);
+
+    if(trackBackMsg === "Error"){
+      const echo = {type: 'text', text: trackBackMsg}
+      return client.replyMessage(token, echo);
+    }else{
+      const echo = {type:'text', text: "บันทึกเรียบร้อยค่ะ"}
+      return client.replyMessage(token, echo);
+    }
+
+
+
+  //   const videoFile = getVideo(msgID, config.channelAccessToken);
+  //   console.log('videoFile--> '+ videoFile);
     
   }
 
@@ -122,19 +136,44 @@ app.post('/callback', async (request, response) => {
 });
 
 // get video //
-function getVideo(id, channelAccessToken) {
+function getVideo(id, channelAccessToken, users) {
+
   let url = 'https://api-data.line.me/v2/bot/message/' + id + '/content';
-  const videoFile = fetch(url,{
-    'headers': {
-      'Authorization' :  'Bearer ' + channelAccessToken,
-    },
-    'method': 'get',
-  });
-  console.log("func videoFile-->" + videoFile);
+  const genDate = new Date();
+
+  try{
+    const genFileName = `${genDate.getDate()}-${genDate.getMonth()}-${genDate.getFullYear()}--${users}.mp4`
+
+    fetch(url,{
+      'headers': {
+        'Authorization' :  'Bearer ' + channelAccessToken,
+      },
+      'method': 'get',
+    }).then(res => {
+      new Promise((resolve, reject) => {
+        const dest = fs.createWriteStream('./videoSave/'+genFileName);
+        res.body.pipe(dest);
+        res.body.on('end', () => resolve());
+        dest.on('error', reject);
+        
+        // const status = "Success record."
+        // return status
+      })
+    })
+  }catch(err){
+    const errorMsg = "Error";
+    return errorMsg
+  }
+
+  };
+
+  // const filePath = './';
+  // download(videoFile, filePath).then(() => console.log("download")).catch((err) => console.log(err.message))
+
   // console.log(`data--> ${data.then()}`);
   // let videoMP4 = data.getBlob().getAs('video/mp4').setName(Number(new Date()) + '.mp4');
-  return videoFile;
-}
+  // return videoFile;
+ 
 
 
 // flex menu week selection // 
