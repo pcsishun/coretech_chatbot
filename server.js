@@ -206,7 +206,7 @@ function openCam(){
             "label": "Open Video",
             "uri": "https://line.me/R/nv/camera/" // API Line open cam https://line.me/R/nv/camera/
           },
-          "color": "#C6CFEAFF"
+          "color": "#8DE2E9FF"
         }
       ]
     }
