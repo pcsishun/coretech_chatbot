@@ -110,9 +110,10 @@ app.post('/callback', async (request, response) => {
   }
 
   if(msgType === "video"){
-    console.log("video path");
+
+    // console.log("video path");
     const videoFile = getVideo(msgID, config.channelAccessToken);
-    console.log('videoFile--> '+ videoFile);
+    // console.log('videoFile--> '+ videoFile);
     
   }
 
@@ -129,7 +130,7 @@ function getVideo(id, channelAccessToken) {
     },
     'method': 'get',
   });
-  console.log("func videoFile-->" + videoFile);
+  // console.log("func videoFile-->" + videoFile);
   // console.log(`data--> ${data.then()}`);
   // let videoMP4 = data.getBlob().getAs('video/mp4').setName(Number(new Date()) + '.mp4');
   return videoFile;
