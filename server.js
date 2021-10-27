@@ -4,6 +4,8 @@ import express from 'express';
 import mysql from 'mysql';
 // import axios from 'axios';
 import bodyParser from 'body-parser';
+import fetch from 'node-fetch';
+import multer from 'multer';
 
 const app = express();
 const port = process.env.PORT || 5500;
@@ -27,8 +29,14 @@ const connection = process.env.CLOUD_SQL_CONNECTION_HOST
 const config = {
   // channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   // channelSecret: process.env.CHANNEL_SECRET,
-  channelAccessToken: 'cO1iyreuV91L0UUTc+q2mCyQ42ZDXSSKB6W93/SBh2jvpj32CGUsMFR0UwiD9KerYVnrgFk5Bk7bQXYCTdpmh9YwAe6+GGAgfwAGg9hEETqsiue7WGTuTN0DW0GOMigPWocyZF0INoBN/D2PnX4vZAdB04t89/1O/w1cDnyilFU=',
-  channelSecret: '861ffd3753523b9a44922355ff2c7582'
+
+  // CoreTech 
+  // channelAccessToken: 'cO1iyreuV91L0UUTc+q2mCyQ42ZDXSSKB6W93/SBh2jvpj32CGUsMFR0UwiD9KerYVnrgFk5Bk7bQXYCTdpmh9YwAe6+GGAgfwAGg9hEETqsiue7WGTuTN0DW0GOMigPWocyZF0INoBN/D2PnX4vZAdB04t89/1O/w1cDnyilFU=',
+  // channelSecret: '861ffd3753523b9a44922355ff2c7582'
+
+  // Debuger Earth bot
+  channelAccessToken: 'XP9ou/4jtHzuPuy4Ww+zXTT+DELHkUeggzoAPTrcU1Zft+0ScJqNlyGjyAafq6mXJnS82G2M4Len5HcSXBsZ12AMT7QYL4/aCiS3gBsecmc4YFgytS8ZO1d2qvHc9Xu37jdofGCNSB/YsCRbQdpEGQdB04t89/1O/w1cDnyilFU=',
+  channelSecret: 'be0800f53454016519d9635928b1c87e'
 };
 
 // create LINE SDK client
@@ -37,14 +45,22 @@ const client = new line.Client(config);
 
 app.post('/callback', async (request, response) => {
   // console.log('Start....')
+  let msgID = request.body.events[0].message.id;
+  console.log(`msgID--> ${msgID}`);
   let userID = request.body.events[0].source.userId
-  // console.log(`userID--> ${userID}`);
+  console.log(`userID--> ${userID}`);
   let msgType = request.body.events[0].message.type;
-  // console.log(`msgType--> ${msgType}`);
+  console.log(`msgType--> ${msgType}`);
+
   let msgText = request.body.events[0].message.text;
-  // console.log(`msgText---> ${msgText}`);
+  if(!msgText || msgText == undefined || msgText == "undefined" || msgText == null){
+    msgText === "noValue";
+    console.log(`If msgText---> ${msgText}`);
+  }
+  console.log(`msgText---> ${msgText}`);
+
   let token = request.body.events[0].replyToken;
-  // console.log(`replay token--> ${token}`);
+  console.log(`replay token--> ${token}`);
 
   if (msgText === 'Dashboard') {
     const msgReply = getFlexMenu();
@@ -58,38 +74,67 @@ app.post('/callback', async (request, response) => {
     const echo = {type: 'flex', altText: 'This is a Flex Message', contents: replyFlexOpenCam}
     return client.replyMessage(token, echo);
   }
-  else if (msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) 
-  {
-    const conn = mysql.createConnection({
-      host: connection,
-      socketPath: socketPath,
-      user: user,
-      password: pass,
-      database: db
-    });
 
-    conn.connect(function (err) {
-      // if (err) throw console.log(err);
-      const sql = `INSERT INTO collect_userid_email (email , uid) VALUES ('${msgText}', '${userID}')`;
-      conn.query(sql, function (err, result) {
-        if (err){
-          console.log(err.message)
-          const replyMsg = {type: 'text', contents: err.message}
-          return client.replyMessage(token, replyMsg);
-        }
-        else{
-          console.log('inserted')
-          const replyMsg = {type: 'text', contents: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
-          return client.replyMessage(token, replyMsg)
-        }
-        
+  try{
+    if (
+      msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) 
+    {
+      const conn = mysql.createConnection({
+        host: connection,
+        socketPath: socketPath,
+        user: user,
+        password: pass,
+        database: db
       });
-    });
+  
+      conn.connect(function (err) {
+        // if (err) throw console.log(err);
+        const sql = `INSERT INTO collect_userid_email (email , uid) VALUES ('${msgText}', '${userID}')`;
+        conn.query(sql, function (err, result) {
+          if (err){
+            console.log(err.message)
+            const replyMsg = {type: 'text', contents: err.message}
+            return client.replyMessage(token, replyMsg);
+          }
+          else{
+            console.log('inserted')
+            const replyMsg = {type: 'text', contents: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
+            return client.replyMessage(token, replyMsg)
+          }
+          
+        });
+      });
+    }
+  }catch(err){
+    console.log(err.message);
+  }
+
+  if(msgType === "video"){
+    console.log("video path");
+    const videoFile = getVideo(msgID, config.channelAccessToken);
+    console.log('videoFile--> '+ videoFile);
+    
   }
 
 
 
 });
+
+// get video //
+function getVideo(id, channelAccessToken) {
+  let url = 'https://api-data.line.me/v2/bot/message/' + id + '/content';
+  const videoFile = fetch(url,{
+    'headers': {
+      'Authorization' :  'Bearer ' + channelAccessToken,
+    },
+    'method': 'get',
+  });
+  console.log("func videoFile-->" + videoFile);
+  // console.log(`data--> ${data.then()}`);
+  // let videoMP4 = data.getBlob().getAs('video/mp4').setName(Number(new Date()) + '.mp4');
+  return videoFile;
+}
+
 
 // flex menu week selection // 
 function getFlexMenu() {
