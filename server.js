@@ -6,7 +6,7 @@ import mysql from 'mysql';
 import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import download  from 'download';
+import store from '@google-cloud/storage';
 // import multer from 'multer';
 
 const app = express();
@@ -20,6 +20,7 @@ const pass = process.env.CLOUD_SQL_PASSWORD
 const db = process.env.CLOUD_SQL_DATABASE_NAME
 const socketPath = process.env.CLOUD_SQL_CONNECTION_NAME
 const connection = process.env.CLOUD_SQL_CONNECTION_HOST
+const bucket = store.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 
 // console.log(`user --> ${user}`);
 // console.log(`pass --> ${pass}`);

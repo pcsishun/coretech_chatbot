@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^5.15.3",
     "@line/bot-sdk": "^7.4.0",
     "axios": "^0.23.0",
     "body-parser": "^1.19.0",
