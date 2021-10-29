@@ -108,7 +108,7 @@ app.post('/callback', async (request, response) => {
       });
     }
   }catch(err){
-    console.log(err.message);
+    console.log(err.message + "หากไม่ใช้ mail ผ่าน");
   }
 
   if(msgType === "video"){
@@ -152,7 +152,9 @@ function getVideo(id, channelAccessToken, users) {
     }).then(res => {
       new Promise((resolve, reject) => {
         const dest = fs.createWriteStream('./videoSave/'+genFileName);
+        console.log(`dest--> ${dest}`);
         res.body.pipe(dest);
+        console.log('pipe--> '+res.body.pipe(dest));
         res.body.on('end', () => resolve());
         dest.on('error', reject);
         
@@ -262,6 +264,20 @@ function openCam(){
         {
           "type": "text",
           "text": "เช่น นอนไม่ค่อยดีเลยงานเยอะมาก",
+          "align": "center",
+          "gravity": "center",
+          "contents": []
+        },
+        {
+          "type": "text",
+          "text": "เช่น สงสัยกังวลเยอะเลยนอนไม่หลับ",
+          "align": "center",
+          "gravity": "center",
+          "contents": []
+        },
+        {
+          "type": "text",
+          "text": "ถ้านอนไม่ดีแบบนี้กลัวกระทบงานจัง",
           "align": "center",
           "gravity": "center",
           "contents": []
