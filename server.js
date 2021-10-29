@@ -7,7 +7,8 @@ import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
 import { Storage } from '@google-cloud/storage';
-import { block } from 'react-native-reanimated';
+import { format } from 'path';
+
 // import multer from 'multer';
 
 const app = express();
@@ -148,40 +149,61 @@ function getVideo(id, channelAccessToken, users) {
   let url = 'https://api-data.line.me/v2/bot/message/' + id + '/content';
   const genDate = new Date();
 
-  try {
+ 
     const genFileName = `${genDate.getDate()}-${genDate.getMonth()}-${genDate.getFullYear()}--${users}.mp4`
     const blob = bucket.file(genFileName)
 
-    fetch(url, {
-      'headers': {
-        'Authorization': 'Bearer ' + channelAccessToken,
-      },
-      'method': 'get',
-    }).then(res => {
-      new Promise((resolve, reject) => {
-        const dest = blob.createWriteStream('./videoSave/' + genFileName);
-        console.log(`dest--> ${dest}`);
-        res.body.pipe(dest);
-        console.log('pipe--> ' + res.body.pipe(dest));
-        res.body.on('end', () => resolve());
-        dest.on('error', reject);
-        dest.on('finish', () => {
-          const publicUrl = format(
-            `https://storage.googleapis.com/storage/browser/${bucket.name}/${blob.name}`
-          );
-          res.status(200).send(publicUrl);
-        });
-
-        // const status = "Success record."
-        // return status
+    try{
+      fetch(url, {
+        'headers': {
+          'Authorization': 'Bearer ' + channelAccessToken,
+        },
+        'method': 'get',
+      }).then(res =>{
+        new Promise((resolve, reject)=>{
+          res.body.pipe(blob.createWriteStream({
+            resumable:true,
+          })).on('finish', ()=>{
+            const publicUrl = format(`https://storage.googleapis.com/storage/browser/${bucket.name}/${blob.name}`);
+            res.status(200).send(publicUrl)
+          });
+        })
       })
-    })
-  } catch (err) {
-    const errorMsg = "Error";
-    return errorMsg
-  }
+    }catch(err){
+      console.log(err.message)
+      const errorMsg = "Error";
+      return errorMsg;
+    }
+}
 
-};
+
+    
+  //     res => {
+  //     new Promise((resolve, reject) => {
+  //       const dest = fs.createWriteStream(genFileName);
+  //       res.body.pipe(dest);
+  //       dest.on('finish', () => {
+  //         const publicUrl = format(
+  //           `https://storage.googleapis.com/storage/browser/${bucket.name}/${dest}`
+  //         );
+  //         res.status(200).send(publicUrl);
+  //       });
+  //       res.body.on('end', () => resolve());
+  //       // dest.on('error', reject);
+  //       // const status = "Success record."
+  //       // return status
+
+
+
+
+  //     })
+  //   })
+  // } catch (err) {
+  //   const errorMsg = "Error";
+  //   return errorMsg
+  // }
+
+// };
 
 // const filePath = './';
 // download(videoFile, filePath).then(() => console.log("download")).catch((err) => console.log(err.message))
