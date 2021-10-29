@@ -6,7 +6,7 @@ import mysql from 'mysql';
 import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import store from '@google-cloud/storage';
+import { store, Storage } from '@google-cloud/storage';
 // import multer from 'multer';
 
 const app = express();
@@ -20,7 +20,14 @@ const pass = process.env.CLOUD_SQL_PASSWORD
 const db = process.env.CLOUD_SQL_DATABASE_NAME
 const socketPath = process.env.CLOUD_SQL_CONNECTION_NAME
 const connection = process.env.CLOUD_SQL_CONNECTION_HOST
-const bucket = store.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+// const bucket = store.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+
+const gCloud = new Storage({
+  keyFilename: './testdeploy-330007-cfc853e977b1.json',
+  projectId: 'testdeploy-330007'
+});
+
+const bucket = gCloud.bucket('scg_storage');
 
 // console.log(`user --> ${user}`);
 // console.log(`pass --> ${pass}`);
@@ -56,7 +63,7 @@ app.post('/callback', async (request, response) => {
   console.log(`msgType--> ${msgType}`);
 
   let msgText = request.body.events[0].message.text;
-  if(!msgText || msgText == undefined || msgText == "undefined" || msgText == null){
+  if (!msgText || msgText == undefined || msgText == "undefined" || msgText == null) {
     msgText === "noValue";
     console.log(`If msgText---> ${msgText}`);
   }
@@ -70,18 +77,16 @@ app.post('/callback', async (request, response) => {
     const echo = { type: 'flex', altText: 'This is a Flex Message', contents: msgReply };
 
     return client.replyMessage(token, echo);
-  } 
-  else if (msgText === "คำถามใน Thinking Log เพื่ออัด VDO")
-  {
+  }
+  else if (msgText === "คำถามใน Thinking Log เพื่ออัด VDO") {
     const replyFlexOpenCam = openCam()
-    const echo = {type: 'flex', altText: 'This is a Flex Message', contents: replyFlexOpenCam}
+    const echo = { type: 'flex', altText: 'This is a Flex Message', contents: replyFlexOpenCam }
     return client.replyMessage(token, echo);
   }
 
-  try{
+  try {
     if (
-      msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) 
-    {
+      msgText.includes('@gmail.com') || msgText.includes('@Gmail.com')) {
       const conn = mysql.createConnection({
         host: connection,
         socketPath: socketPath,
@@ -89,47 +94,47 @@ app.post('/callback', async (request, response) => {
         password: pass,
         database: db
       });
-  
+
       conn.connect(function (err) {
         // if (err) throw console.log(err);
         const sql = `INSERT INTO collect_userid_email (email , uid) VALUES ('${msgText}', '${userID}')`;
         conn.query(sql, function (err, result) {
-          if (err){
+          if (err) {
             console.log(err.message)
-            const replyMsg = {type: 'text', text: err.message}
+            const replyMsg = { type: 'text', text: err.message }
             return client.replyMessage(token, replyMsg);
           }
-          else{
+          else {
             console.log('inserted')
-            const replyMsg = {type: 'text', text: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ'}
+            const replyMsg = { type: 'text', text: 'ทำการบันทึก email ของท่านเรียบร้อยค่ะ' }
             return client.replyMessage(token, replyMsg)
           }
-          
+
         });
       });
     }
-  }catch(err){
+  } catch (err) {
     console.log(err.message + "หากไม่ใช้ mail ผ่าน");
   }
 
-  if(msgType === "video"){
+  if (msgType === "video") {
 
     console.log("video path");
     const trackBackMsg = getVideo(msgID, config.channelAccessToken, userID);
 
-    if(trackBackMsg === "Error"){
-      const echo = {type: 'text', text: trackBackMsg}
+    if (trackBackMsg === "Error") {
+      const echo = { type: 'text', text: trackBackMsg }
       return client.replyMessage(token, echo);
-    }else{
-      const echo = {type:'text', text: "บันทึกเรียบร้อยค่ะ"}
+    } else {
+      const echo = { type: 'text', text: "บันทึกเรียบร้อยค่ะ" }
       return client.replyMessage(token, echo);
     }
 
 
 
-  //   const videoFile = getVideo(msgID, config.channelAccessToken);
-  //   console.log('videoFile--> '+ videoFile);
-    
+    //   const videoFile = getVideo(msgID, config.channelAccessToken);
+    //   console.log('videoFile--> '+ videoFile);
+
   }
 
 
@@ -142,41 +147,41 @@ function getVideo(id, channelAccessToken, users) {
   let url = 'https://api-data.line.me/v2/bot/message/' + id + '/content';
   const genDate = new Date();
 
-  try{
+  try {
     const genFileName = `${genDate.getDate()}-${genDate.getMonth()}-${genDate.getFullYear()}--${users}.mp4`
 
-    fetch(url,{
+    fetch(url, {
       'headers': {
-        'Authorization' :  'Bearer ' + channelAccessToken,
+        'Authorization': 'Bearer ' + channelAccessToken,
       },
       'method': 'get',
     }).then(res => {
       new Promise((resolve, reject) => {
-        const dest = fs.createWriteStream('./videoSave/'+genFileName);
+        const dest = fs.createWriteStream('./videoSave/' + genFileName);
         console.log(`dest--> ${dest}`);
         res.body.pipe(dest);
-        console.log('pipe--> '+res.body.pipe(dest));
+        console.log('pipe--> ' + res.body.pipe(dest));
         res.body.on('end', () => resolve());
         dest.on('error', reject);
-        
+
         // const status = "Success record."
         // return status
       })
     })
-  }catch(err){
+  } catch (err) {
     const errorMsg = "Error";
     return errorMsg
   }
 
-  };
+};
 
-  // const filePath = './';
-  // download(videoFile, filePath).then(() => console.log("download")).catch((err) => console.log(err.message))
+// const filePath = './';
+// download(videoFile, filePath).then(() => console.log("download")).catch((err) => console.log(err.message))
 
-  // console.log(`data--> ${data.then()}`);
-  // let videoMP4 = data.getBlob().getAs('video/mp4').setName(Number(new Date()) + '.mp4');
-  // return videoFile;
- 
+// console.log(`data--> ${data.then()}`);
+// let videoMP4 = data.getBlob().getAs('video/mp4').setName(Number(new Date()) + '.mp4');
+// return videoFile;
+
 
 
 // flex menu week selection // 
@@ -247,7 +252,7 @@ function getFlexMenu() {
 
 
 // flex msg before open cam // 
-function openCam(){
+function openCam() {
   return {
     "type": "bubble",
     "direction": "ltr",
