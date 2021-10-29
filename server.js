@@ -6,7 +6,8 @@ import mysql from 'mysql';
 import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import {Storage}  from '@google-cloud/storage';
+import { Storage } from '@google-cloud/storage';
+import { block } from 'react-native-reanimated';
 // import multer from 'multer';
 
 const app = express();
@@ -149,6 +150,7 @@ function getVideo(id, channelAccessToken, users) {
 
   try {
     const genFileName = `${genDate.getDate()}-${genDate.getMonth()}-${genDate.getFullYear()}--${users}.mp4`
+    const blob = bucket.file(genFileName)
 
     fetch(url, {
       'headers': {
@@ -157,12 +159,18 @@ function getVideo(id, channelAccessToken, users) {
       'method': 'get',
     }).then(res => {
       new Promise((resolve, reject) => {
-        const dest = fs.createWriteStream('./videoSave/' + genFileName);
+        const dest = blob.createWriteStream('./videoSave/' + genFileName);
         console.log(`dest--> ${dest}`);
         res.body.pipe(dest);
         console.log('pipe--> ' + res.body.pipe(dest));
         res.body.on('end', () => resolve());
         dest.on('error', reject);
+        dest.on('finish', () => {
+          const publicUrl = format(
+            `https://storage.googleapis.com/storage/browser/${bucket.name}/${blob.name}`
+          );
+          res.status(200).send(publicUrl);
+        });
 
         // const status = "Success record."
         // return status
