@@ -6,7 +6,7 @@ import mysql from 'mysql';
 import fs from 'fs';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import { store, Storage } from '@google-cloud/storage';
+import {Storage}  from '@google-cloud/storage';
 // import multer from 'multer';
 
 const app = express();
