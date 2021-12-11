@@ -1,0 +1,21 @@
+cron:
+  - description: "Earth Cron"
+    url: /jobs/earth
+    schedule: every day 14:35
+    timezone: Asia/Bangkok
+  - description: "Peak Cron"
+    url: /jobs/peak
+    schedule: every day 18:00
+    timezone: Asia/Bangkok
+  - description: "Proud Cron"
+    url: /jobs/proud
+    schedule: every day 18:30
+    timezone: Asia/Bangkok
+  - description: "furt Cron"
+    url: /jobs/furt
+    schedule: every day 19:00
+    timezone: Asia/Bangkok
+  - description: "ploy Cron"
+    url: /jobs/ploy
+    schedule: every day 20:00
+    timezone: Asia/Bangkok

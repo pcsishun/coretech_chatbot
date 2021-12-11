@@ -1,0 +1,30 @@
+indexes:
+- kind: user_runninig_menu
+  properties:
+  - name: userid
+  - name: id_log
+    direction: desc
+
+- kind: user_runninig_menu
+  properties:
+  - name: menu_selection
+  - name: running_number
+  - name: user_reply
+  - name: userid
+  - name: id_log
+    direction: desc
+
+- kind: user_runninig_menu
+  properties:
+  - name: menu_selection
+  - name: userid
+  - name: id_log
+    direction: desc
+
+- kind: user_runninig_menu
+  properties:
+  - name: menu_selection
+  - name: running_number
+  - name: userid
+  - name: id_log
+    direction: desc
