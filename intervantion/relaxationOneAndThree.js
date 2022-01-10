@@ -1,4 +1,4 @@
-function relaxation(){
+function relaxationOneAndThree(){
     return{
       "type": "carousel",
       "columns": [
@@ -22,29 +22,6 @@ function relaxation(){
                     "type": "message",
                     "label": "รายละเอียด",
                     "text": "รายละเอียด Muscle relaxation"
-                }
-            ]
-          },
-          {
-            "thumbnailImageUrl": "https://i.ibb.co/mXvMMTz/deep-deep.png",
-            "imageBackgroundColor": "#000000",
-            "title": "Deep-slow breathing",
-            "text": "การหายใจเข้าออกลึก ๆ จะทำให้เราหลับสบายขึ้น",
-            "defaultAction": {
-                "type": "uri",
-                "label": "View detail",
-                "uri": "https://i.ibb.co/mXvMMTz/deep-deep.png"
-            },
-            "actions": [
-                {
-                    "type": "message",
-                    "label": "ดำเนินการ",
-                    "text": "ดำเนินการ Deep slow breathing"
-                },
-                {
-                    "type": "message",
-                    "label": "รายละเอียด",
-                    "text": "รายละเอียด Deep slow breathing"
                 }
             ]
           },
@@ -77,4 +54,4 @@ function relaxation(){
     }
 }
 
-export default  relaxation; 
+export default  relaxationOneAndThree; 

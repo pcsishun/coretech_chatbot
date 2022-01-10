@@ -17,7 +17,7 @@ function deepSlowBreathing(){
         },
         "hero": {
           "type": "image",
-          "url": "https://vos.line-scdn.net/bot-designer-template-images/bot-designer-icon.png",
+          "url": "https://i.ibb.co/FXGvRTy/deep1-deep.png",
           "size": "full",
           "aspectRatio": "1.51:1",
           "aspectMode": "fit"
@@ -28,7 +28,7 @@ function deepSlowBreathing(){
           "contents": [
             {
               "type": "text",
-              "text": "กรุณาเลือก 1 วิธี ",
+              "text": "มาเริ่มผ่อนคลายตามขั้นตอนนึ้ได้เลยค่ะ",
               "weight": "bold",
               "align": "center",
               "contents": []
@@ -42,7 +42,7 @@ function deepSlowBreathing(){
             },
             {
               "type": "text",
-              "text": "1. Clip บอกวิธีการทำ progressive",
+              "text": "1. Clip สาธิตบอกวิธีการทำ progressive",
               "align": "center",
               "contents": []
             },
@@ -60,7 +60,7 @@ function deepSlowBreathing(){
             },
             {
               "type": "text",
-              "text": "2. เปิดเพลง 20 นาที ",
+              "text": "2. เลือกเปิดเพลง 20 นาที",
               "align": "center",
               "contents": []
             }
@@ -74,17 +74,21 @@ function deepSlowBreathing(){
               "type": "button",
               "action": {
                 "type": "message",
-                "label": "1.VDO how to",
+                "label": "ดู Clip สาธิต",
                 "text": "breathing Video"
-              }
+              },
+              "color": "#667DD2FF",
+              "style": "primary"
             },
             {
               "type": "button",
               "action": {
                 "type": "message",
-                "label": "2.Music Relax",
+                "label": "เลือกเพลง",
                 "text": "Music Relax"
-              }
+              },
+              "color": "#567B54FF",
+              "style": "primary"
             }
           ]
         }
